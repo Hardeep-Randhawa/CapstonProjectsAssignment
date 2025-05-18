@@ -90,11 +90,7 @@ def search_query(query):
   prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
   prompt = prompt_template.format(context=context_text, question=query)
 
-  # call LLM model to generate the answer based on the given context and query
-  #model =   
-  ##ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
-  #response_text = model.predict(prompt)
-  #print(response_text)
+   
 
     # Define the model name
   model_name = "distilgpt2" # You can replace this with another suitable model
