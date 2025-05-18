@@ -91,7 +91,7 @@ def search_query(query):
   prompt = prompt_template.format(context=context_text, question=query)
 
   # call LLM model to generate the answer based on the given context and query
-  #model =  ChatOpenAI(api_key='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')
+  #model =   
   ##ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
   #response_text = model.predict(prompt)
   #print(response_text)
