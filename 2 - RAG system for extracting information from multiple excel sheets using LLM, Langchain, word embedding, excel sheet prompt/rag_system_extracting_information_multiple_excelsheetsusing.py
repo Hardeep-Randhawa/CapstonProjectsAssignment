@@ -47,7 +47,7 @@ for file in excel_files:
 
 
 # 2. Split documents if needed (optional for large rows)
-
+#https://python.langchain.com/docs/concepts/text_splitters/
 text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=0)
 
 split_docs = []
@@ -59,16 +59,20 @@ for doc in all_docs:
 
 
 # 3. Create embeddings and vector store using HuggingFace
-
+# This model is used for creating vector representations of text.
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 #vectorstore = FAISS.from_documents(split_docs, embeddings)
+
+# embed the chunks as vectors and load them into the database.
 CHROMA_PATH = "Chroma"
 # embed the chunks as vectors and load them into the database.
 db_chroma = Chroma.from_documents(split_docs, embeddings, persist_directory=CHROMA_PATH)
 
 
 # 4. Set up the HuggingFace LLM (e.g., Falcon, Llama, or any supported model)
+#hosts over 120k models, 20k datasets, and 50k demo apps (Spaces), all open source and publicly available, 
+#in an online platform where people can easily collaborate and build ML together.
 
 llm_pipeline = pipeline(
 
@@ -86,7 +90,8 @@ llm_pipeline = pipeline(
 
 llm = HuggingFacePipeline(pipeline=llm_pipeline)
 
-
+# The RetrievalQA chain performed natural-language question answering 
+# over a data source using retrieval-augmented generation.
 
 qa_chain = RetrievalQA.from_chain_type(
 

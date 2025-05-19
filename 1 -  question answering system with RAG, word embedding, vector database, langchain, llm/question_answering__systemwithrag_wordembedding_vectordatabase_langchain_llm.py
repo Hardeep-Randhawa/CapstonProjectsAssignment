@@ -113,6 +113,7 @@ def search_query(query):
   # Create a pipeline
   #hosts over 120k models, 20k datasets, and 50k demo apps (Spaces), all open source and publicly available, 
   #in an online platform where people can easily collaborate and build ML together.
+  #Hugging Face models can be run locally through the HuggingFacePipeline class.
   pipe = pipeline(
         "text-generation",
         model=model,
@@ -121,7 +122,7 @@ def search_query(query):
         temperature=0.7, # Adjust as needed
     )
 
-    # Create the HuggingFacePipeline instance
+  # Create the HuggingFacePipeline instance
   llm = HuggingFacePipeline(pipeline=pipe)
   response_text = llm.predict(prompt)
   print(response_text)
