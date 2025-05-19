@@ -7,15 +7,15 @@ Original file is located at
     https://colab.research.google.com/drive/1YB0azKi2Oa6w07EWLJti-UysLCToG5p_
 """
 
+# install the desired libaries package
+
 !pip install langchain
 !pip install langchain-openai
 !pip install langchain_community
 !pip install sentence_transformers
 !pip install chromadb
 !pip install pypdf
-
 !pip install transformers
-
 !pip install langchain_huggingface
 
 # import libraries
@@ -30,6 +30,7 @@ from sentence_transformers import SentenceTransformer
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
+#login huggingface with token
 !huggingface-cli login
 
 def search_query(query):
@@ -40,10 +41,14 @@ def search_query(query):
   # load your pdf docs
   DOC_PATH = "/content/sample_data/alphabet_10K_2022.pdf"
   # load your pdf doc
+  #https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.pdf.PyPDFLoader.html
+  # l PDF loder library
   loader = PyPDFLoader(DOC_PATH)
   pages = loader.load()
 
   # split the doc into smaller chunks i.e. chunk_size=500
+  #https://python.langchain.com/docs/concepts/text_splitters/
+  #The Recursive Text Splitter Module is a module in the LangChain library that can be used to split text recursively
   text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
   chunks = text_splitter.split_documents(pages)
 
@@ -56,14 +61,13 @@ def search_query(query):
   #query='Summarize the alphabet_10K_2022 document'
 
    # embed the chunks as vectors and load them into the database.
+   #https://python.langchain.com/docs/integrations/vectorstores/
   db_chroma = Chroma.from_documents(chunks, embeddings, persist_directory=CHROMA_PATH)
 
   # retrieve context - top 5 most relevant (closests) chunks to the query vector
   # (by default Langchain is using cosine distance metric)
+  #	Run similarity search with Chroma with distance.
   docs_chroma = db_chroma.similarity_search_with_score(query, k=5)
-
-  # generate an answer based on given user query and retrieved context information
-  context_text = "\n\n".join([doc.page_content for doc, _score in docs_chroma])
 
   # generate an answer based on given user query and retrieved context information
   context_text = "\n\n".join([doc.page_content for doc, _score in docs_chroma])
@@ -73,6 +77,8 @@ def search_query(query):
   max_context_length = 500
 
 
+ 
+  # https://python.langchain.com/api_reference/core/prompts/langchain_core.prompts.chat.ChatPromptTemplate.html
   # you can use a prompt template
   PROMPT_TEMPLATE = """
   Answer the question based only on the following context:
@@ -84,22 +90,29 @@ def search_query(query):
   Do not say "according to the context" or "mentioned in the context" or similar.
   """
 
-  #LLM
-
   # load retrieved context and user query in the prompt template
   prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
   prompt = prompt_template.format(context=context_text, question=query)
 
    
 
-    # Define the model name
-  model_name = "distilgpt2" # You can replace this with another suitable model
+  # Define the model name
+  # You can replace this with another suitable model
+  # https://huggingface.co/distilbert/distilgpt2
+  model_name = "distilgpt2" 
 
-    # Load the model and tokenizer
+  # Tokenizers are essential tools in machine learning, especially in natural language processing (NLP). 
+  # They break down text into smaller units called tokens.
+  # Load the model and tokenizer
+  # https://medium.com/@stealthsecurity/understanding-autotokenizer-in-huggingface-transformers-680a4982c9da
+  # AutoTokenizer is use to  choose the right tokenizer for your model without knowing the details.
   tokenizer = AutoTokenizer.from_pretrained(model_name)
   model = AutoModelForCausalLM.from_pretrained(model_name)
 
-    # Create a pipeline
+  #https://python.langchain.com/docs/integrations/llms/huggingface_pipelines/
+  # Create a pipeline
+  #hosts over 120k models, 20k datasets, and 50k demo apps (Spaces), all open source and publicly available, 
+  #in an online platform where people can easily collaborate and build ML together.
   pipe = pipeline(
         "text-generation",
         model=model,
