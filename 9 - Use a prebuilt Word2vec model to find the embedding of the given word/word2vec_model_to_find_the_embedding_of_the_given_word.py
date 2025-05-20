@@ -7,10 +7,12 @@ Original file is located at
     https://colab.research.google.com/drive/1vPcZr0QsxSSZIMSliYeW5wuo3Bcl3eMQ
 """
 
+#import gensim
 import gensim.downloader as api
 
-# Load the pre-trained GloVe model (50-dimensional vectors)
-model = api.load("glove-wiki-gigaword-50")
+# Load the pre-trained word2vec model
+
+model = api.load("word2vec-google-news-300")
 
 # Example: Get the vector for a word
 
