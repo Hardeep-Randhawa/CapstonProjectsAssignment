@@ -48,7 +48,7 @@ def preprocess_data(data,n_components):
 
     # Handle missing values
     # for data cleaning and preprocessing, ensuring data integrity for analysis
-
+    # Remove all rows with NULL values from the DataFrame.
     data = data.dropna()
 
     # Separate features (X) and target variable (y)
@@ -82,6 +82,8 @@ def train_model(X, y):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+	# Multilinear regression assumes a linear relationship between the independent and dependent variables, meaning that
+    # the relationship can be represented by a straight line or a plane in higher dimensions. 
     model = LinearRegression()
 
     model.fit(X_train, y_train)
