@@ -14,6 +14,9 @@ from collections import Counter
 def compute_tf(sentence):
   words=sentence.lower().split()
   total_word=len(words)
+  #The Counter is a container available in the collections module in Python.
+  #It is a subclass of the dict class and is used for counting hashable objects. 
+  #Counter stores elements as dictionary keys and their counts as dictionary values`
   tf=Counter(words)
   for word in tf:
     tf[word]/=total_word
